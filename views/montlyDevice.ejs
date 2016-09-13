@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Device View</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <p>Device List result is</p>
+    <script type="text/javascript">
+      var resultObj=<%- JSON.stringify(resultString) %>;
+      var keyBuckets=resultObj.aggregations.record_over_time.buckets;
+	  for(var i=0;i<keyBuckets.length;i++){
+		 document.write(keyBuckets[i].key_as_string);
+		 document.write(",");
+		 document.write(keyBuckets[i].ActiveUsers.value);
+		 document.write("<br>");
+	  }      
+   </script>
+  </body>
+</html>
