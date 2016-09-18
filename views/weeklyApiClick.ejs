@@ -9,10 +9,10 @@
     <table border="1">
     <script type="text/javascript">
       var resultObj=<%- JSON.stringify(resultString) %>;
-      var keyBuckets=resultObj.aggregations.record_over_time.buckets;
+      var keyBuckets=resultObj.aggregations.ApiClicks.buckets;
 	  for(var i=0;i<keyBuckets.length;i++){
-		 document.write("<tr><td>"+keyBuckets[i].key_as_string+"</td>");
-		 document.write("<td>"+keyBuckets[i].ActiveUsers.value+"</td></tr>");
+		 document.write("<tr><td>"+keyBuckets[i].key+"</td>");
+		 document.write("<td>"+keyBuckets[i].doc_count+"</td></tr>");
 	  }      
    </script>
    </table>

@@ -480,16 +480,58 @@ module.exports =
 
 	},
 	
-		//body:FacetsBody
+		//body:DAU in 60 days
 	FilterBody :{
 		size:0,
 		query : {
 				range : {
 					"dt" : {
-						from : "now-14d/d",
+						from : "now-60d/d",
 						to : "now/d"
 					}
 				}
+		},
+		aggs: {
+			record_over_time: {
+				date_histogram: {
+					field: "dt",
+					interval : "day",
+					format:"YYYYMMdd"
+				},
+				aggs: {
+					ActiveUsers: {
+						cardinality: {
+							field: "uid",
+						}
+						
+					}
+				}
+			}
+
+		}
+	},
+	
+	//body:DAU in 60 days
+	FilterBodyAD :{
+		size:0,
+		query : {
+			filtered:{
+				filter:{
+					and: [
+							{range : {
+								"dt" : {
+									from : "now-60d/d",
+									to : "now/d"
+								}
+							}
+							},
+							{
+								match:{"ad_type": "ad"}
+							}
+					]
+				
+			}}
+
 		},
 		aggs: {
 			record_over_time: {

@@ -8,6 +8,49 @@ var client = new elasticsearch.Client({
 //  log: 'trace'
 });
 
+var reqViewMap={
+	'dau':{
+		esQueryObj:{
+				  //index: 'app_log_prod',
+				  index: 'app_log_prod_with_user',
+				  type: 'logs',
+				  body: filterLib.FilterBody //DAU work
+				},
+		  rsView:"dau",
+		  desc:"DAU (Last 60 days)"
+	},
+	'dau_ad':{
+		esQueryObj:{
+				  //index: 'app_log_prod',
+				  index: 'app_log_prod_with_user',
+				  type: 'logs',
+				  body: filterLib.FilterBodyAD //DAU work
+				},
+		  rsView:"dau",
+		  desc:"DAU AD(Last 60 days)"
+	},
+	'pcdevice':{
+		esQueryObj:{
+				  //index: 'app_log_prod',
+				  index: 'app_log_prod_with_user',
+				  type: 'logs',
+				  body: filterLib.MultipleMonthDeviceBodyPC //
+				},
+		  rsView:"montlyDevice",
+		  desc:"Monthly Active Devices (PC)"
+	},
+	'apiweekly':{
+		esQueryObj:{
+			  //index: 'app_log_prod',
+			  index: 'app_log_prod_with_user',
+			  type: 'logs',
+			  body: filterLib.AllAPIWeeklyLogBody //
+			},
+	  rsView:"weeklyApiClick",
+	  desc:"Weekly API Clicks"		
+	}
+}
+
 module.exports = {
 		  testES: function(req, res, next) {
 			  //console.log(req.query.q);
@@ -15,21 +58,39 @@ module.exports = {
 			  console.log(bCondition);
 			  var result={msg:"ok"};
 			  var rsView='blankPage';
-			  if(req.query.q=="dau"){
-				  var esQueryObj={
-						  //index: 'app_log_prod',
-						  index: 'app_log_prod_with_user',
-						  type: 'logs',
-						  body: filterLib.FilterBody //DAU work
-						};
-			  }else if(req.query.q=='devices'){
-				  var esQueryObj={
-						  //index: 'app_log_prod',
-						  index: 'app_log_prod_with_user',
-						  type: 'logs',
-						  body: filterLib.MultipleMonthDeviceBodyPC //
-						};
-				  rsView="montlyDevice";				  
+			  var desc="";
+			  console.log(req.query.q);
+			  if(typeof reqViewMap[req.query.q]!='undefined'){
+//				  var esQueryObj={
+//						  //index: 'app_log_prod',
+//						  index: 'app_log_prod_with_user',
+//						  type: 'logs',
+//						  body: filterLib.FilterBody //DAU work
+//						};
+//				  rsView="dau";
+//				  desc="DAU (Last 60 days)";
+				  var esQueryObj=reqViewMap[req.query.q].esQueryObj;
+				  rsView=reqViewMap[req.query.q].rsView;
+				  desc=reqViewMap[req.query.q].desc;
+				  
+//			  }else if(req.query.q=="dau_ad"){
+//				  var esQueryObj={
+//						  //index: 'app_log_prod',
+//						  index: 'app_log_prod_with_user',
+//						  type: 'logs',
+//						  body: filterLib.FilterBodyAD //DAU work
+//						};
+//				  rsView="dau";
+//				  desc="DAU AD(Last 60 days)";
+//			  }else if(req.query.q=='pcdevice'){
+//				  var esQueryObj={
+//						  //index: 'app_log_prod',
+//						  index: 'app_log_prod_with_user',
+//						  type: 'logs',
+//						  body: filterLib.MultipleMonthDeviceBodyPC //
+//						};
+//				  rsView="montlyDevice";
+//				  desc="Monthly Active Devices (PC)";
 			  }else{
 				  //res.send("Common Response");
 				  res.render(rsView, { resultString: 'Common Response' });
@@ -48,7 +109,7 @@ module.exports = {
 //					console.trace(resp);
 					//res.send(JSON.stringify(resp));
 					//res.render(rsView, { resultString: JSON.stringify(resp) });
-					res.render(rsView, { resultString: resp });
+					res.render(rsView, { resultString: resp, descString: desc });
 				}, function (err) {
 				    console.trace(err.message);
 				    return "error";
