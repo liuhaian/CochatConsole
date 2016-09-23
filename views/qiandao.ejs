@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<style type="text/css">
+		body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+	</style>
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=3D0gSwXIdWMRBYpTI07noesY"></script>
+	<script type="text/javascript" src="script/jquery-3.1.1.min.js"></script>
+	<title>设置点的新图标</title>
+</head>
+<body>
+	<div id="LocationInfo">#</div>
+	<div id="myDiv">#</div>
+	<div id="allmap"></div>
+</body>
+</html>
+<script type="text/javascript">
+
+	//get uid from cookie
+	var usrId = getCookie('uid');
+
+	//获取Cookie的人值
+	function getCookie(name) {
+		var arr = document.cookie.match(new RegExp("(^| )" + name + "=([^;]*)(;|$)"));
+		if (arr != null)
+			return unescape(arr[2]);
+		//return "null";
+		return "cochat";
+	}
+    //get location from APK'
+	if(window.android!=undefined){
+		var resultStr=window.android.getLocation();
+		var result=JSON.parse(resultStr);
+	}else{
+		result={lontitude:116.404,latitude:39.915};
+	}
+
+	var dataObj={userId:usrId, action:"qiandao",latitude:result.latitude,lontitude: result.lontitude,_o:"1.4.4"};
+
+    
+    document.getElementById("LocationInfo").innerHTML=""+result.latitude+","+result.lontitude+","+usrId;
+	//document.getElementById("LocationInfo").innerHTML=""+result;
+	// 百度地图API功能
+	var map = new BMap.Map("allmap");
+	//var point = new BMap.Point(116.404, 39.915);
+	var point=new BMap.Point(result.lontitude,result.latitude);
+	map.centerAndZoom(point, 15);
+	
+	//创建小狐狸
+	//var pt = new BMap.Point(116.417, 39.909);
+	var pt=new BMap.Point(result.lontitude,result.latitude);
+	var myIcon = new BMap.Icon("http://developer.baidu.com/map/jsdemo/img/fox.gif", new BMap.Size(300,157));
+//	myIcon.setAttribute("id", "qiandaoicon");
+	
+	var marker2 = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
+	map.addOverlay(marker2);              // 将标注添加到地图中
+
+	
+	   //point center
+	   var ptLocation=[{lontitude:116.429,latitude:39.930}];
+	   var point = new BMap.Point(116.429, 39.930);
+	   var marker = new BMap.Marker(point);
+	   map.addOverlay(marker);            //增加圆
+	   var circle = new BMap.Circle(point,500,{strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5}); //创建圆
+	   map.addOverlay(circle);            //增加圆
+
+	
+</script>
+<script>
+$( document ).ready(function() {
+	
+	$("#myDiv").click(function(){
+		jQuery.ajax({
+			  type: 'POST',
+			  data: "value="+ JSON.stringify(dataObj),
+			  url:"http://cnapp.cochat.lenovo.com/qiandao",
+			  success:function(data) {
+				  resultObj=JSON.parse(data);
+				  if(data.code == 404 ){  
+					  $("#myDiv").html("打卡成功");
+				  }else{
+					  $("#myDiv").html("打卡失败，请稍后重试。");
+					  
+				  }
+
+			  }, 
+			  error : function(err) {
+				  resultObj=err.responseJSON;
+				  if(resultObj._code == 404 ){  
+					  $("#myDiv").html("打卡成功");
+				  }else{
+					  $("#myDiv").html("打卡失败，请稍后重试。");
+					  
+				  }
+
+			  }
+		  });
+	});
+});
+</script>

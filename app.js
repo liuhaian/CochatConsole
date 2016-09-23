@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var devices = require('./routes/devices');
+var qiandao = require('./routes/qiandao');
 
 var app = express();
 
@@ -26,6 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 app.use('/devices',devices);
+app.use('/nojs.php',qiandao);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
