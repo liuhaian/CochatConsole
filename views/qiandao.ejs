@@ -36,6 +36,7 @@
 	}else{
 		result={lontitude:116.404,latitude:39.915};
 	}
+    
 
 	var dataObj={userId:usrId, action:"qiandao",latitude:result.latitude,lontitude: result.lontitude,_o:"1.4.4"};
 
@@ -66,6 +67,23 @@
 	   var circle = new BMap.Circle(point,500,{strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5}); //创建圆
 	   map.addOverlay(circle);            //增加圆
 
+   		var xdiff=0;
+	    //Set timer to update my location
+	    var timer = setInterval(function() {
+	    	xdiff=xdiff+0.0001;
+	    	
+	    	if(window.android!=undefined){
+	    		var newResultStr=window.android.getLocation();
+	    		var newResult=JSON.parse(resultStr);
+	    		var newPoint=new BMap.Point(result.lontitude,result.latitude);
+	    	}else{
+	    		var newPoint=new BMap.Point(116.404+xdiff, 39.909+xdiff);
+	    	}
+	    	map.removeOverlay(marker2);
+	    	marker2.setPosition(newPoint);
+	    	map.addOverlay(marker2);
+	    	
+	    }, 1000);
 	
 </script>
 <script>

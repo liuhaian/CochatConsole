@@ -553,6 +553,79 @@ module.exports =
 		}
 	},
 	
+	//body:DAU in 60 days
+	wFilterBody :{
+		size:0,
+		query : {
+				range : {
+					"dt" : {
+						from : "now-60d/d",
+						to : "now/d"
+					}
+				}
+		},
+		aggs: {
+			record_over_time: {
+				date_histogram: {
+					field: "dt",
+					interval : "week",
+					format:"YYYYMMdd"
+				},
+				aggs: {
+					ActiveUsers: {
+						cardinality: {
+							field: "uid",
+						}
+						
+					}
+				}
+			}
+
+		}
+	},
+	
+	//body:DAU in 60 days
+	wFilterBodyAD :{
+		size:0,
+		query : {
+			filtered:{
+				filter:{
+					and: [
+							{range : {
+								"dt" : {
+									from : "now-60d/d",
+									to : "now/d"
+								}
+							}
+							},
+							{
+								match:{"ad_type": "ad"}
+							}
+					]
+				
+			}}
+
+		},
+		aggs: {
+			record_over_time: {
+				date_histogram: {
+					field: "dt",
+					interval : "week",
+					format:"YYYYMMdd"
+				},
+				aggs: {
+					ActiveUsers: {
+						cardinality: {
+							field: "uid",
+						}
+						
+					}
+				}
+			}
+
+		}
+	},
+	
 	//RegExp OK
 	RegExpBody :{
 		size:0,

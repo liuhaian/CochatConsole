@@ -48,6 +48,26 @@ var reqViewMap={
 			},
 	  rsView:"weeklyApiClick",
 	  desc:"Weekly API Clicks"		
+	},
+	'wau':{
+		esQueryObj:{
+				  //index: 'app_log_prod',
+				  index: 'app_log_prod_with_user',
+				  type: 'logs',
+				  body: filterLib.wFilterBody //DAU work
+				},
+		  rsView:"dau",
+		  desc:"WAU (Last 60 days)"
+	},
+	'wau_ad':{
+		esQueryObj:{
+				  //index: 'app_log_prod',
+				  index: 'app_log_prod_with_user',
+				  type: 'logs',
+				  body: filterLib.wFilterBodyAD //DAU work
+				},
+		  rsView:"dau",
+		  desc:"WAU AD(Last 60 days)"
 	}
 }
 
